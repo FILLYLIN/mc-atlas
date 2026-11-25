@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>方法与数据 · mc·atlas</title>
+<meta name="description" content="Minecraft 类作用图谱的生成方法、证据层级、七个版本的规模表与已知边界。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="method">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap">
+  <header class="page-head rise">
+    <p class="eyebrow">Method &amp; Limits</p>
+    <h1>方法与数据<br><span class="grad">以及已知限制</span></h1>
+    <p class="lede">角色标签来自证据推断，而非逐行语义分析；对象数值来自运行时注册表。以下列出判定依据、语料规模与尚未覆盖的部分。</p>
+  </header>
+
+  <section class="section" style="padding-top:20px">
+    <div class="steps">
+      <div class="card step"><h3>静态索引</h3><p>反编译源码逐行解析，得到 9,884 个类型、58,085 个方法、41,878 个字段。按包路径、命名、继承先分类，再把注册对象反查回来。</p></div>
+      <div class="card step"><h3>运行时探针</h3><p>下载官方 server bundle，解出内层 jar 与 39 个服务端库，编译 <code>Probe.java</code>，在同一个 JVM 里跑 <code>Bootstrap.bootStrap()</code>，把注册表 dump 成 JSON。</p></div>
+      <div class="card step"><h3>游戏内实验</h3><p>专用服务器 + 命令脚本：搭红石灯、召唤苦力怕、给僵尸设护甲，读回 <code>Health</code> 与方块状态。7 项检查全部通过。</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">角色判定</p><h2>判定优先级</h2></div></div>
+    <div class="evidence-stack">
+      <div class="ev-row"><div class="lvl">一级</div><div><div style="font-size:13.5px;margin-bottom:6px"><b>注册表反查</b> —— 方块/物品/实体/效果的真实实现类，491 个类有这种硬证据</div><div class="bar" style="width:100%"></div></div></div>
+      <div class="ev-row"><div class="lvl">二级</div><div><div style="font-size:13.5px;margin-bottom:6px"><b>包路径</b> —— <code>world.level.block.entity</code> 是方块实体，<code>client.renderer.entity</code> 是实体渲染器</div><div class="bar" style="width:74%"></div></div></div>
+      <div class="ev-row"><div class="lvl">三级</div><div><div style="font-size:13.5px;margin-bottom:6px"><b>命名 / 继承</b> —— <code>*Renderer</code>、<code>*Screen</code>、<code>*Packet</code>、<code>*Recipe</code></div><div class="bar" style="width:46%"></div></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid g2">
+      <div class="card">
+        <h3>26.3 运行时基线</h3>
+        <div id="baselineTable"></div>
+      </div>
+      <div class="card">
+        <h3>七个版本</h3>
+        <p style="margin-bottom:12px">每个版本都有独立源码树、索引和 git 标签；运行时探针目前只覆盖未混淆的 26.x。</p>
+        <div style="overflow:auto"><table id="versionTable"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">边界</p><h2>已知限制</h2></div></div>
+    <ul class="limits">
+      <li><b>1.21.x 的运行时数值。</b>混淆版本要先拿 <code>server_mappings</code> 把服务端 jar 重映射一遍，探针才跑得起来；目前只对 26.x 直接支持。</li>
+      <li><b>物品的堆叠 / 耐久。</b>它们存在数据组件里，要等数据包加载（<code>ReloadableServerResources</code>）才绑定；只跑 Bootstrap 时 <code>ItemStack</code> 会抛 “Components not bound yet”。</li>
+      <li><b>附魔、群系、伤害类型等。</b>这些是数据包注册表（<code>data/minecraft/**/*.json</code>），不在 95 个内置注册表里，需要单独做 JSON 解析。</li>
+      <li><b>角色标签基于推断。</b>491 个类有注册表证据，其余 9,393 个只有包级 / 命名级标签。可用于定位，不替代逐行阅读。</li>
+      <li><b>索引的已知损失。</b>官方映射不覆盖合成成员（<code>lambda$…</code>、<code>Foo$1</code>），匿名内部类不单独成条，重载参数变化表现为“新增 + 删除”。</li>
+      <li><b>硬度取默认状态。</b>极少数方块会随状态/位置改变硬度，探针用默认 <code>BlockState</code> 取值，依赖世界的个别方块可能返回异常值（已按空值处理）。</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">复现</p><h2>命令</h2></div></div>
+    <div class="card">
+      <div class="cmd">mc lang        # 取官方语言文件
+mc probe       # 跑注册表
+mc roles build # 生成角色目录
+mc gametest    # 7 项游戏实验
+mc site        # 重建站点</div>
+      <p class="hint" style="margin-top:12px">所有产物都在本地；<code>work/</code>、<code>index/</code>、<code>roles/</code>、<code>site/</code> 都不入库，可随时重建。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid g2">
+      <a class="card" href="../notes/类作用解析.md"><h3>完整分析笔记 →</h3><p>代码出处、实验记录、边界与扩展方式，都在 notes/类作用解析.md。</p></a>
+      <a class="card" href="../index/26.3/browse.html"><h3>原始符号浏览器 →</h3><p>index/26.3/browse.html：按方法、字段、行号检索 26.3 的全部源码。</p></a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/method.js"></script>
+</body>
+</html>

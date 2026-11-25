@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>游戏内实验记录 · mc·atlas</title>
+<meta name="description" content="用专用服务器验证 Minecraft 26.3 的红石、爆炸抗性与护甲减伤：7 项检查、实测 16.58。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="tests">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap">
+  <header class="test-hero rise">
+    <div class="ring" id="ring" style="--p:100"><div class="in"><b id="ringN">7/7</b><span class="inspan">checks</span></div></div>
+    <div style="flex:1;min-width:280px">
+      <p class="eyebrow">In-Game Experiments</p>
+      <h1 style="font-size:clamp(34px,4.6vw,58px)">游戏内实验记录</h1>
+      <p class="lede" style="margin-top:14px">在离线专用服务器（超平坦、端口 25599）中通过命令构造场景，读取方块状态与实体生命值，用于核对代码推导。</p>
+      <p class="hint" id="testSummary">7 项通过 · 0 项失败</p>
+    </div>
+  </header>
+
+  <section class="section" style="padding-top:34px">
+    <div class="section-head"><div><p class="eyebrow">检查项</p><h2>7 项检查</h2></div><p class="hint">日志见页面底部</p></div>
+    <div class="checks" id="checks"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">护甲减伤</p><h2>护甲减伤的公式与实测</h2></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>代码推导</h3>
+        <p style="margin-bottom:14px">CombatRules.getDamageAfterAbsorb（<code>CombatRules.java:19</code>）：</p>
+        <div class="formula">toughness = 2 + armorToughness / 4
+realArmor = clamp(armor − damage / toughness, armor × 0.2, 20)
+damage'  = damage × (1 − realArmor / 25)
+
+护甲 20 / 伤害 9：
+realArmor = clamp(20 − 4.5, 4, 20) = <b>15.5</b>
+damage'  = 9 × (1 − 15.5 / 25) = <b>3.42</b>
+最终生命 = 20 − 3.42 = <b>16.58</b></div>
+      </div>
+      <div class="card">
+        <h3>服务器读数</h3>
+        <p style="margin-bottom:10px">两只僵尸的护甲 base 分别设为 0 与 20，各承受 9 点 <code>mob_attack</code>，读取 <code>Health</code>。</p>
+        <table id="armorTable"></table>
+        <p class="hint" style="margin-top:12px">注：摔落伤害属于 <code>bypasses_armor</code>，不适用于护甲减伤测试。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">实验命令</p><h2>命令序列</h2></div><p class="hint">node tools/gametest.mjs --version=26.3</p></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>红石灯 + 爆炸</h3>
+        <div class="cmd">gamerule advance_time false
+forceload add -16 -16 15 15
+setblock -8 100 0 redstone_lamp[lit=false]
+setblock -8 101 0 lever[face=floor,powered=true]
+execute if block -8 100 0 redstone_lamp[lit=true] run say CHECK lamp-on
+
+setblock 0 100 -6 obsidian
+setblock 2 100 -6 dirt
+summon creeper 1 101 -6 {Fuse:2s,ExplosionRadius:3b,ignited:1b}
+execute if block 0 100 -6 obsidian run say CHECK obsidian-survived</div>
+      </div>
+      <div class="card">
+        <h3>护甲</h3>
+        <div class="cmd">summon zombie 6 100 6 {Tags:["zf0"],Health:20f}
+summon zombie 9 100 6 {Tags:["zf1"],Health:20f}
+attribute @e[tag=zf0,limit=1] minecraft:armor base set 0
+attribute @e[tag=zf1,limit=1] minecraft:armor base set 20
+damage @e[tag=zf0,limit=1] 9 minecraft:mob_attack
+damage @e[tag=zf1,limit=1] 9 minecraft:mob_attack
+data get entity @e[tag=zf1,limit=1] Health</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><p class="eyebrow">原始记录</p><h2>服务器日志</h2></div><p class="hint">work/26.3/gametest/server.log</p></div>
+    <pre class="log" id="log"></pre>
+  </section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/tests.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>注册对象 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 的 3,231 个注册对象：方块、物品、实体、状态效果、药水、属性，以及它们的运行时数值。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="objects">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap wide">
+  <header class="page-head rise">
+    <p class="eyebrow">Registry Objects</p>
+    <h1>注册对象</h1>
+    <p class="lede">3,231 个对象，来自 95 个内置注册表。名称取自游戏内置语言文件，可在下方选择语言；未收录译名的对象显示注册 ID。</p>
+  </header>
+
+  <div class="obj-head">
+    <div class="kind-tabs" id="kindTabs"></div>
+  </div>
+  <div class="toolbar">
+    <label class="search" style="box-shadow:none">
+      <span class="ico">⌕</span>
+      <input id="oq" placeholder="搜索注册 ID / 实现类 / 类别 …" autocomplete="off" aria-label="搜索对象">
+      <kbd>/</kbd>
+    </label>
+    <label class="lang-select"><span>名称语言</span><select id="langSelect" aria-label="名称语言"></select></label>
+    <span class="hint" style="margin-left:auto">点表头可排序</span>
+  </div>
+  <div class="count-line" id="objCount"></div>
+  <div class="table-wrap">
+    <table>
+      <thead id="objHead"></thead>
+      <tbody id="objRows"></tbody>
+    </table>
+  </div>
+  <div class="load-more"><button class="btn" id="objMore">显示更多</button></div>
+</main>
+<div class="drawer" id="drawer">
+  <div class="scrim" data-close></div>
+  <aside class="panel" role="dialog" aria-modal="true">
+    <button class="icon-btn drawer-close" data-close aria-label="关闭">✕</button>
+    <div id="drawerBody"></div>
+  </aside>
+</div>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/data/lang/zh_cn.js"></script>
+<script src="assets/data/objects.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/objects.js"></script>
+</body>
+</html>

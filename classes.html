@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>类作用 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 的 9,884 个类型：角色、层、注册对象、源码位置。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="classes">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap wide">
+  <header class="page-head rise">
+    <p class="eyebrow">Class Atlas</p>
+    <h1>类作用</h1>
+    <p class="lede">9,884 个类型按 177 种角色归类。角色判定以注册表反查为优先，其次为包路径与命名。选中一行可查看源码位置、继承关系及实现的游戏对象。</p>
+  </header>
+
+  <div class="split">
+    <aside class="rail" id="roleRail" aria-label="角色筛选"></aside>
+    <section class="main-col">
+      <div class="toolbar">
+        <label class="search" style="box-shadow:none">
+          <span class="ico">⌕</span>
+          <input id="q" placeholder="搜索类名 / 包 / 角色 …" autocomplete="off" aria-label="搜索类">
+          <kbd>/</kbd>
+        </label>
+        <div class="seg" id="layerSeg">
+          <button data-layer="" class="on">全部</button>
+          <button data-layer="client">客户端</button>
+          <button data-layer="server">服务端</button>
+          <button data-layer="common">通用</button>
+          <button data-layer="data">数据</button>
+        </div>
+        <select class="role-select" id="roleSelect" aria-label="按角色筛选"></select>
+        <label class="switch"><input type="checkbox" id="onlyReg"><span class="track"></span>只看有注册对象</label>
+      </div>
+      <div class="count-line" id="countLine"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>类</th><th>角色</th><th class="num">对象</th><th class="num">成员</th></tr></thead>
+          <tbody id="classRows"></tbody>
+        </table>
+      </div>
+      <div class="load-more"><button class="btn" id="moreBtn">显示更多</button></div>
+    </section>
+  </div>
+</main>
+<div class="drawer" id="drawer">
+  <div class="scrim" data-close></div>
+  <aside class="panel" role="dialog" aria-modal="true">
+    <button class="icon-btn drawer-close" data-close aria-label="关闭">✕</button>
+    <div id="drawerBody"></div>
+  </aside>
+</div>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/data/roles.js"></script>
+<script src="assets/data/lang/zh_cn.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/classes.js"></script>
+</body>
+</html>

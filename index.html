@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mc·atlas · Minecraft 26.3 源代码分析</title>
+<meta name="description" content="Minecraft 26.3 源代码分析：9,884 个类型、177 种角色、3,231 个注册对象，以及 7 项游戏内检查。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="home">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap">
+  <section class="hero rise">
+    <p class="eyebrow">研究对象 · Minecraft: Java Edition 26.3 · Release 2026-09-15</p>
+    <h1>Minecraft 26.3<br><span class="grad">源代码分析</span></h1>
+    <p class="lede">对一个版本的客户端源码同时建立静态符号索引与运行时注册表快照，给出每个类型在游戏中承担的角色，以及方块、物品、实体等对象在运行时的数值。</p>
+    <div class="abstract">
+      <p><b>语料</b> 26.3 客户端反编译源码，7,301 个 .java，9,884 个类型（顶层 6,736），58,085 个方法。</p>
+      <p><b>方法</b> 静态符号索引；运行时注册表 dump（<code>Bootstrap.bootStrap()</code>，95 个内置注册表 / 7,053 条）；离线专用服务器命令实验（7 项检查）。</p>
+      <p><b>结果</b> 491 个类被注册表直接认领；1,286 个方块、1,658 个物品、161 个实体、40 个状态效果。护甲减伤公式的实测值 16.58 与代码推导一致。</p>
+    </div>
+    <form class="search hero-search" action="classes.html" method="get">
+      <span class="ico">⌕</span>
+      <input name="q" placeholder="检索类名、注册 ID、角色或译名" autocomplete="off" aria-label="检索">
+      <button class="btn primary" type="submit">检索</button>
+    </form>
+    <div class="stats">
+      <div class="stat"><div class="n" data-stat="types">9,884</div><div class="l">Types</div><div class="s" data-sub="types"></div></div>
+      <div class="stat"><div class="n" data-stat="roles">177</div><div class="l">Roles</div><div class="s" data-sub="roles"></div></div>
+      <div class="stat"><div class="n" data-stat="objects">3,231</div><div class="l">Registry objects</div><div class="s" data-sub="objects"></div></div>
+      <div class="stat"><div class="n" data-stat="tests">7/7</div><div class="l">In-game checks</div><div class="s" data-sub="tests"></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">数据来源</p><h2>三类材料</h2></div>
+      <p class="hint">静态索引提供结构与命名，运行时注册表提供对象与数值，服务器实验提供行为读数。</p>
+    </div>
+    <div class="evidence">
+      <a class="card rise" href="classes.html">
+        <div class="num">01 · STATIC</div>
+        <h3>静态符号索引</h3>
+        <p>反编译源码逐行解析，得到 9,884 个类型、58,085 个方法、41,878 个字段。按包路径、命名与继承划分角色，再与注册表反查结果合并。</p>
+        <span class="arrow">类作用 →</span>
+      </a>
+      <a class="card rise" href="objects.html" style="animation-delay:60ms">
+        <div class="num">02 · RUNTIME</div>
+        <h3>运行时注册表</h3>
+        <p>加载 26.x 游戏逻辑后读取 95 个内置注册表，得到 7,053 条对象记录。方块硬度与抗爆、实体生命与尺寸等数值均取自注册表实例。</p>
+        <span class="arrow">注册对象 →</span>
+      </a>
+      <a class="card rise" href="tests.html" style="animation-delay:120ms">
+        <div class="num">03 · IN-GAME</div>
+        <h3>命令实验</h3>
+        <p>离线专用服务器中构造红石、爆炸与护甲场景，读取方块状态与实体生命值，用于核对代码推导。</p>
+        <span class="arrow">实验记录 →</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">结果摘要</p><h2>若干可复核的观察</h2></div>
+    </div>
+    <div class="findings">
+      <a class="card finding" href="objects.html?kind=blocks&q=obsidian">
+        <div class="tag">01</div>
+        <div><h3>Block 与方块实现类的复用</h3><p>Block 直接实现 182 个方块；1,286 个方块共 268 个实现类，其中 SlabBlock 97 个、StairBlock 93 个。角色表中的 376 个“方块类”还包含 BlockBehaviour、SoundType 等辅助类。</p></div>
+      </a>
+      <a class="card finding" href="objects.html?kind=items&q=diamond_sword">
+        <div class="tag">02</div>
+        <div><h3>工具类在版本间的移除</h3><p>1.21.8 移除 SwordItem / PickaxeItem；26.3 移除 AxeItem / HoeItem / ShovelItem。剑、镐、斧等行为改由 Item.Properties.sword/pickaxe/axe(...) 的数据组件声明。</p></div>
+      </a>
+      <a class="card finding" href="classes.html?role=数据修复">
+        <div class="tag">03</div>
+        <div><h3>数据修复包的规模</h3><p>数据修复角色共 306 个类，其中 util.datafix.fixes 包 301 个，数量高于任何渲染包，且不产生注册对象。</p></div>
+      </a>
+      <a class="card finding" href="method.html">
+        <div class="tag">04</div>
+        <div><h3>26.x 的渲染抽象</h3><p>com.mojang.renderpearl 共 213 个类，包含 OpenGL 与 Vulkan 后端；world.attribute 51 个、server.jsonrpc 87 个。</p></div>
+      </a>
+      <a class="card finding" href="tests.html">
+        <div class="tag">05</div>
+        <div><h3>护甲减伤</h3><p>护甲 20 承受 9 点 mob_attack，代码推导结果为 16.58，服务器读数为 16.58。摔落伤害属于 bypasses_armor，不适用于该测试。</p></div>
+      </a>
+      <a class="card finding" href="classes.html?q=Zombie&class=net.minecraft.world.entity.monster.zombie.Zombie">
+        <div class="tag">06</div>
+        <div><h3>实体默认属性</h3><p>僵尸包含 29 条默认属性：20 生命、2 护甲、35 格追踪距离、0.23 移速、0.6×1.95 尺寸。</p></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">角色分布</p><h2>按类数排序的前 12 种角色</h2></div>
+      <p class="hint">共 177 种</p>
+    </div>
+    <div class="bars" id="roleBars"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">站点结构</p><h2>五个入口</h2></div>
+    </div>
+    <div class="grid g3">
+      <a class="card" href="classes.html"><h3>类作用</h3><p>按角色、层与注册对象筛选 9,884 个类型；查看源码位置、继承关系与实现的游戏对象。</p></a>
+      <a class="card" href="mechanisms.html"><h3>代码联想</h3><p>把 GTMC 的文章机制对到 26.3 源码的调用链：更新、计划刻、活塞、实体运动。</p></a>
+      <a class="card" href="objects.html"><h3>注册对象</h3><p>六个类别、3,231 个对象；方块、实体、效果等数值可按列排序，名称可在中英文间切换。</p></a>
+      <a class="card" href="tests.html"><h3>游戏实验</h3><p>7 项检查、护甲公式对照与原始服务器日志。</p></a>
+      <a class="card" href="method.html"><h3>方法与限制</h3><p>角色判定依据、运行时基线、七个版本的规模表与已知边界。</p></a>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/home.js"></script>
+</body>
+</html>

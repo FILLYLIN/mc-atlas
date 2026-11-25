@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>代码联想 · mc·atlas</title>
+<meta name="description" content="把 GTMC 技术文章里的机制与 Minecraft 26.3 源码里的调用链对齐：方块更新、计划刻、刻内时序、活塞、方块实体、实体运动与瞬时元件。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%237ce3b0'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%23042014'%3E%E2%97%86%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0a0f0c">
+<link rel="stylesheet" href="assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="index.html">首页</a>
+    <a data-page="classes" href="classes.html">类作用</a>
+    <a data-page="mechanisms" href="mechanisms.html">机制</a>
+    <a data-page="objects" href="objects.html">注册对象</a>
+    <a data-page="tests" href="tests.html">游戏实验</a>
+    <a data-page="method" href="method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<main class="wrap wide">
+  <header class="page-head rise">
+    <p class="eyebrow">Code Association · GTMC × 26.3</p>
+    <h1>代码联想</h1>
+    <p class="lede" id="mechIntro"></p>
+  </header>
+
+  <section class="section" style="padding-top:6px">
+    <div class="card graph-card">
+      <div class="section-head" style="margin-bottom:8px">
+        <div><p class="eyebrow">调用与队列</p><h2 style="font-size:24px">从 tick 到方块与实体</h2></div>
+        <p class="hint">点击机制节点跳到下方卡片；点击代码节点打开对应类</p>
+      </div>
+      <div class="graph-scroll" id="mechGraph"></div>
+      <div class="legend">
+        <span><i class="dot engine"></i>主循环</span>
+        <span><i class="dot hub"></i>队列 / 入口</span>
+        <span><i class="dot mech"></i>机制</span>
+        <span class="hint">箭头表示调用或数据流，不等同于完整调用图</span>
+        <span class="graph-scroll-hint">窄屏可横向滚动查看全图</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">机制链</p><h2>七条跨系统链路</h2></div>
+      <label class="search" style="box-shadow:none;max-width:360px">
+        <span class="ico">⌕</span>
+        <input id="mechSearch" placeholder="搜索机制 / 类 / 文章 …" autocomplete="off" aria-label="搜索机制">
+      </label>
+    </div>
+    <div id="mechCards" class="mech-list"></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div><p class="eyebrow">GTMC 文章</p><h2>机制说明的原文入口</h2></div>
+      <p class="hint" id="articleCount"></p>
+    </div>
+    <div id="articleList" class="article-list"></div>
+  </section>
+
+  <section class="section">
+    <div class="card">
+      <h3>本地模型检索</h3>
+      <p class="hint" style="margin-bottom:10px">文章已切块并用本机 Ollama 的 <code>qwen3-embedding:0.6b</code> 建索引；检索与总结都不出本机。</p>
+      <div class="cmd">node tools/techmc.mjs fetch      # 下载 GTMC 中文文章
+node tools/techmc.mjs index      # 分块 + 本地嵌入
+node tools/techmc.mjs search "活塞 方块事件" --k=6
+node tools/techmc.mjs ask "活塞推动方块时，方块事件和方块实体各自负责什么？"</div>
+      <p class="hint" style="margin-top:10px">索引在 <code>work/gtmc/index.json</code>；文章在 <code>work/gtmc/articles</code>，都不入库。</p>
+    </div>
+  </section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="assets/data/meta.js"></script>
+<script src="assets/data/mechanisms.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/mechanisms.js"></script>
+</body>
+</html>
