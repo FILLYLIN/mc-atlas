@@ -21,7 +21,8 @@
           x: x - (VOX - 1) / 2, y: y - (VOX - 1) / 2, z: z - (VOX - 1) / 2,
           grass: y === VOX - 1,
           dir: [Math.cos(a) * (0.5 + 0.5 * Math.sin(b)), Math.cos(b) * 0.7, Math.sin(a) * (0.5 + 0.5 * Math.sin(b))],
-          seed: ((t * 37) % 100) / 100
+          seed: ((t * 37) % 100) / 100,
+          dir2: (() => { const ax = Math.cos(a) * 0.9 + ((t % 7) / 7 - 0.5) * 0.6; const ay = Math.sin(b) * 0.9 + ((t % 5) / 5 - 0.5) * 0.6; const l = Math.hypot(ax, ay) || 1; return [ax / l, ay / l]; })()
         });
       }
     }
@@ -131,23 +132,35 @@
         if (nr[2] > 0.02) continue;
         const pts = [];
         let zsum = 0;
+        const flow = ease(seg(p, 0.4, 0.95));
+        const zoom = 1 + flow * 2.2 + burst * 2.4;
+        const ox = v.dir2[0] * flow * Math.min(W, H) * 0.55;
+        const oy = v.dir2[1] * flow * Math.min(W, H) * 0.42;
         for (const c of f.v) {
           const local = [px + (c[0] - 0.5) * s * 2, py + (c[1] - 0.5) * s * 2, pz + (c[2] - 0.5) * s * 2];
           const r = rotPoint(local, yaw, pitch);
           const pr = project(r, scale, cx, cy);
-          pts.push(pr); zsum += r[2];
+          pts.push([cx + (pr[0] - cx) * zoom + ox, cy + (pr[1] - cy) * zoom + oy, pr[2]]);
+          zsum += r[2];
         }
         const sh = f.shade * (0.82 + 0.32 * (1 - split * 0.5));
-        polys.push({
-          z: zsum / 4, pts,
-          color: `rgb(${Math.round(base[0] * sh)},${Math.round(base[1] * sh)},${Math.round(base[2] * sh)})`,
-          alpha: (1 - 0.88 * clamp(textT * 1.7)) * (1 - burst)
-        });
+        const col = `rgb(${Math.round(base[0] * sh)},${Math.round(base[1] * sh)},${Math.round(base[2] * sh)})`;
+        const a0 = clamp(1 - ease(seg(p, 0.62, 0.95)) * 1.1) * (1 - burst);
+        polys.push({ z: zsum / 4, pts, color: col, alpha: a0 });
+        const trail = ease(seg(p, 0.34, 0.8)) * 0.55;
+        if (trail > 0.02) {
+          const k = 1 - 0.16 * trail;
+          polys.push({
+            z: zsum / 4 - 0.01, color: col, alpha: a0 * trail * 0.5, blur: true,
+            pts: pts.map(([x, y, d]) => [cx + (x - cx) * k, cy + (y - cy) * k, d])
+          });
+        }
       }
     }
     polys.sort((a, b) => b.z - a.z);
     for (const poly of polys) {
       if (poly.alpha <= 0.02) continue;
+      ctx.filter = poly.blur ? 'blur(3px)' : 'none';
       ctx.globalAlpha = poly.alpha;
       ctx.beginPath();
       ctx.moveTo(poly.pts[0][0], poly.pts[0][1]);
@@ -156,6 +169,7 @@
       ctx.fillStyle = poly.color;
       ctx.fill();
     }
+    ctx.filter = 'none';
     ctx.globalAlpha = 1;
 
     // 爆炸火花
@@ -171,43 +185,6 @@
         ctx.fillRect(x - sz / 2, y - sz / 2, sz, sz);
       }
       ctx.globalAlpha = 1;
-    }
-
-    // 类名：从方块里喷出，向镜头飞过，带拉伸与残影
-    if (textT > 0.002 && burst < 0.999) {
-      const { fs, items, halfW, halfH } = layout;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (const it of items) {
-        let t = (textT - 0.16 * it.up) / 0.84;
-        if (t <= 0) continue;
-        t = Math.min(t, 1.6);
-        const r = 0.05 + Math.pow(t, 1.72) * 2.15;
-        const ang = it.ang + it.spin * 0.4 + t * 0.55;
-        const rad = fs * (0.5 + r * 1.9);
-        const x = cx + Math.cos(ang) * halfW * r;
-        const y = cy + Math.sin(ang) * halfH * r;
-        const fadeIn = clamp(t * 6);
-        const fadeOut = 1 - clamp((r - 1.05) / 0.55);
-        const a = fadeIn * fadeOut * (1 - seg(burst, 0, 0.45));
-        if (a <= 0.01) continue;
-        ctx.save();
-        ctx.translate(x, y);
-        const sy = 1 + r * 0.55;
-        ctx.scale(rad / fs, (rad / fs) * sy);
-        // 残影：同色略淡，沿径向靠前一点
-        for (let g = 2; g >= 1; g--) {
-          ctx.globalAlpha = a * (0.1 * (3 - g)) ;
-          ctx.fillStyle = 'rgba(124,227,176,0.9)';
-          ctx.fillText(it.name, 0, g * 2.2);
-        }
-        ctx.globalAlpha = a * 0.95;
-        ctx.fillStyle = 'rgba(206,255,232,0.96)';
-        ctx.fillText(it.name, 0, 0);
-        ctx.restore();
-      }
-      ctx.globalAlpha = 1;
-      ctx.textAlign = 'start';
     }
 
     // 开场文案
