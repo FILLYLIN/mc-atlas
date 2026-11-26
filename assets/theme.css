@@ -570,7 +570,7 @@ footer a:hover{color:var(--primary)}
 @keyframes atlas-drop{0%,100%{opacity:.25;transform:translateY(-6px)}50%{opacity:.9;transform:translateY(4px)}}
 .atlas-stage.done .atlas-hint{opacity:0}
 @media (max-width:720px){
-  .atlas-stage{height:300vh}
+  .atlas-stage{height:210vh}
   .atlas-lead{bottom:34px;font-size:15px}
 }
 @media (prefers-reduced-motion:reduce){

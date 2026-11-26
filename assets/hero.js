@@ -10,21 +10,26 @@
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let lite = window.innerWidth < 820 || (navigator.hardwareConcurrency || 8) <= 4;
 
-  const VOX = 4;
-  const voxels = [];
-  for (let x = 0; x < VOX; x++) {
-    for (let y = 0; y < VOX; y++) {
-      for (let z = 0; z < VOX; z++) {
-        const t = x * 31 + y * 17 + z * 43 + 7;
-        const a = ((t * 13) % 360) / 360 * Math.PI * 2;
-        const b = ((t * 29) % 360) / 360 * Math.PI;
-        voxels.push({
-          x: x - (VOX - 1) / 2, y: y - (VOX - 1) / 2, z: z - (VOX - 1) / 2,
-          grass: y === VOX - 1,
-          dir: [Math.cos(a) * (0.5 + 0.5 * Math.sin(b)), Math.cos(b) * 0.7, Math.sin(a) * (0.5 + 0.5 * Math.sin(b))],
-          seed: ((t * 37) % 100) / 100,
-          dir2: (() => { const ax = Math.cos(a) * 0.9 + ((t % 7) / 7 - 0.5) * 0.6; const ay = Math.sin(b) * 0.9 + ((t % 5) / 5 - 0.5) * 0.6; const l = Math.hypot(ax, ay) || 1; return [ax / l, ay / l]; })()
-        });
+  let VOX = 4;
+  let voxels = [];
+
+  function buildVoxels(n) {
+    VOX = n;
+    voxels = [];
+    for (let x = 0; x < n; x++) {
+      for (let y = 0; y < n; y++) {
+        for (let z = 0; z < n; z++) {
+          const t = x * 31 + y * 17 + z * 43 + 7;
+          const a = ((t * 13) % 360) / 360 * Math.PI * 2;
+          const b = ((t * 29) % 360) / 360 * Math.PI;
+          voxels.push({
+            x: x - (n - 1) / 2, y: y - (n - 1) / 2, z: z - (n - 1) / 2,
+            grass: y === n - 1,
+            dir: [Math.cos(a) * (0.5 + 0.5 * Math.sin(b)), Math.cos(b) * 0.7, Math.sin(a) * (0.5 + 0.5 * Math.sin(b))],
+            seed: ((t * 37) % 100) / 100,
+            dir2: (() => { const ax = Math.cos(a) * 0.9 + ((t % 7) / 7 - 0.5) * 0.6; const ay = Math.sin(b) * 0.9 + ((t % 5) / 5 - 0.5) * 0.6; const l = Math.hypot(ax, ay) || 1; return [ax / l, ay / l]; })()
+          });
+        }
       }
     }
   }
@@ -51,6 +56,7 @@
   });
 
   let W = 0, H = 0, DPR = 1, pSmooth = 0, layout = null;
+  buildVoxels(lite ? 3 : 4);
 
   const clamp = (v, a = 0, b = 1) => (v < a ? a : v > b ? b : v);
   const seg = (p, a, b) => clamp((p - a) / (b - a));
@@ -105,7 +111,8 @@
 
     const yaw = -0.5 + ease(p) * 4.4;
     const pitch = 0.42 + Math.sin(p * Math.PI) * 0.34;
-    const scale = Math.min(W, H) * (0.062 + 0.03 * enter) * (1 - 0.32 * split);
+    const baseScale = W < 720 ? 0.135 : (0.062 + 0.03 * enter);
+    const scale = Math.min(W, H) * baseScale * (1 - 0.32 * split);
     const cx = W / 2;
     const cy = H * 0.5 + (1 - enter) * Math.min(H * 0.30, 220) - split * H * 0.02;
 
@@ -214,7 +221,11 @@
     if (last) {
       const dt = now - last;
       slow = dt > 28 ? slow + 1 : Math.max(0, slow - 1);
-      if (slow > 4 && !lite) { lite = true; slow = 0; }
+      if (slow > 4) {
+        if (!lite) { lite = true; }
+        else if (VOX > 2) { buildVoxels(2); }
+        slow = 0;
+      }
     }
     last = now;
     const rect = stage.getBoundingClientRect();
