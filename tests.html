@@ -98,10 +98,28 @@ data get entity @e[tag=zf1,limit=1] Health</div>
     <div class="section-head"><div><p class="eyebrow">原始记录</p><h2>服务器日志</h2></div><p class="hint">work/26.3/gametest/server.log</p></div>
     <pre class="log" id="log"></pre>
   </section>
+
+  <section class="section" id="tnt-test">
+    <div class="section-head">
+      <div><p class="eyebrow">实验设计 · 尚未执行</p><h2>TNT 复制：怎么验证</h2></div>
+      <p class="hint">状态：未跑，等专用服务器</p>
+    </div>
+    <div class="card">
+      <h3>装置</h3>
+      <p>黏性活塞 + 一块 TNT + 一个会被活塞推走的更新源（铁轨或珊瑚扇）。铁轨被推走时对相邻 TNT 产生一次更新，正好落在活塞"已记清单、未落块"的窗口里。</p>
+      <h3>要记的三个数</h3>
+      <p>①点燃前后同一位置的 TNT 方块是否还在；②世界中 <code>PrimedTnt</code> 实体的数量；③两个游戏刻后，目标格是否出现一块未点燃的 TNT。</p>
+      <h3>判据</h3>
+      <p>如果实体多了一个、方块也没少，就是复制；只多实体、方块消失，说明更新与搬块没落在同一刻，装置要重新对时序。</p>
+      <h3>目前状态</h3>
+      <p>以上是从源码得出的操作设计，还没在游戏里跑过。跑的时间、版本与读数会补在这一节，不先行写成结论。</p>
+    </div>
+  </section>
+
 </main>
 <footer>
   <div class="wrap row">
-    <span>mc·atlas · 本地生成于 2026/11/27 00:40:41 · 数据 26.3</span>
+    <span>mc·atlas · 本地生成于 2026/11/27 00:44:05 · 数据 26.3</span>
     <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
   </div>
 </footer>
