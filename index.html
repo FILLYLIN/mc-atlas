@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="assets/theme.css">
 </head>
 <body data-page="home">
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
 <header class="topbar">
   <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
   <nav class="nav">
@@ -24,6 +25,12 @@
     <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
   </div>
 </header>
+<section class="atlas-stage" id="atlas-stage">
+  <div class="atlas-sticky">
+    <canvas id="atlas-canvas" aria-hidden="true"></canvas>
+    <div class="atlas-hint" aria-hidden="true">滚动</div>
+  </div>
+</section>
 <main class="wrap">
   <section class="hero rise">
     <p class="eyebrow">研究对象 · Minecraft: Java Edition 26.3 · Release 2026-09-15</p>
@@ -32,7 +39,7 @@
     <div class="abstract">
       <p><b>语料</b> 26.3 客户端反编译源码，7,301 个 .java，9,884 个类型（顶层 6,736），58,085 个方法。</p>
       <p><b>方法</b> 静态符号索引；运行时注册表 dump（<code>Bootstrap.bootStrap()</code>，95 个内置注册表 / 7,053 条）；离线专用服务器命令实验（7 项检查）。</p>
-      <p><b>结果</b> 491 个类被注册表直接认领；1,286 个方块、1,658 个物品、161 个实体、40 个状态效果。护甲减伤公式的实测值 16.58 与代码推导一致。</p>
+      <p><b>结果</b> 491 个类被注册表直接认领；1,286 个方块、1,658 个物品、161 个实体、40 个状态效果。护甲减伤的实测读数与代码推导一致（细节见「游戏实验」）。</p>
     </div>
     <form class="search hero-search" action="classes.html" method="get">
       <span class="ico">⌕</span>
@@ -129,12 +136,15 @@
 </main>
 <footer>
   <div class="wrap row">
-    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span>mc·atlas · 本地生成于 2026/11/27 00:32:46 · 数据 26.3</span>
     <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
   </div>
 </footer>
 <script src="assets/data/meta.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/home.js"></script>
+<script>window.MC_ATLAS_HERO_NAMES = ["GrassBlock","BlockBehaviour","BlockState","Block","Creeper","Monster","Mob","PathfinderMob","EntityType","Entity","LivingEntity","Explosion","PrimedTnt","TntBlock","ExplosionDamageCalculator","DamageSource","Level","ServerLevel","NeighborUpdater","LevelTicks","BlockPos","VoxelShape","ItemStack","Identifier","GameRules","ChunkAccess","RandomSource","Registry","DispenserBlock"];</script>
+<script src="assets/hero.js"></script>
+<script src="assets/backdrop.js"></script>
 </body>
 </html>

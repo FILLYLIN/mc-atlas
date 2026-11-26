@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="assets/theme.css">
 </head>
 <body data-page="method">
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
 <header class="topbar">
   <a class="brand" href="index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
   <nav class="nav">
@@ -75,14 +76,11 @@
   </section>
 
   <section class="section">
-    <div class="section-head"><div><p class="eyebrow">复现</p><h2>命令</h2></div></div>
+    <div class="section-head"><div><p class="eyebrow">复现</p><h2>怎么重跑一遍</h2></div></div>
     <div class="card">
-      <div class="cmd">mc lang        # 取官方语言文件
-mc probe       # 跑注册表
-mc roles build # 生成角色目录
-mc gametest    # 7 项游戏实验
-mc site        # 重建站点</div>
-      <p class="hint" style="margin-top:12px">所有产物都在本地；<code>work/</code>、<code>index/</code>、<code>roles/</code>、<code>site/</code> 都不入库，可随时重建。</p>
+      <p>整条流水线是一条命令接一条命令：取语言文件 → 跑注册表 → 生成角色目录 → 做游戏实验 → 重建站点。所有产物都在本地，<code>work/</code>、<code>index/</code>、<code>roles/</code>、<code>site/</code> 都不入库，随时可以从源码重来。</p>
+      <p class="hint" style="margin-top:12px">具体命令、实验步骤与读数统一收在「游戏实验」页，这里只交代流程。</p>
+      <p style="margin-top:14px"><a class="btn" href="tests.html">去游戏实验页 →</a></p>
     </div>
   </section>
 
@@ -95,12 +93,13 @@ mc site        # 重建站点</div>
 </main>
 <footer>
   <div class="wrap row">
-    <span>mc·atlas · 本地生成于 2026/11/24 13:58:06 · 数据 26.3</span>
+    <span>mc·atlas · 本地生成于 2026/11/27 00:32:46 · 数据 26.3</span>
     <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
   </div>
 </footer>
 <script src="assets/data/meta.js"></script>
 <script src="assets/site.js"></script>
 <script src="assets/method.js"></script>
+<script src="assets/backdrop.js"></script>
 </body>
 </html>

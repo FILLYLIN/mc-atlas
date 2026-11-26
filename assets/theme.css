@@ -552,3 +552,74 @@ footer a:hover{color:var(--primary)}
   .graph-card{padding:12px}
   .mech-card{padding:18px}
 }
+
+/* ── 首页：滚动拆解舞台 ───────────────────────────── */
+.atlas-stage{position:relative;height:340vh;margin:0}
+.atlas-sticky{position:sticky;top:0;height:100vh;overflow:hidden;
+  background:radial-gradient(120% 90% at 50% 42%,rgba(124,227,176,.10),transparent 62%),var(--bg)}
+#atlas-canvas{display:block;width:100%;height:100%}
+.atlas-lead{position:absolute;left:max(24px,4vw);bottom:clamp(28px,7vh,72px);margin:0;
+  font-family:var(--display);font-size:clamp(15px,2.1vw,22px);font-weight:600;letter-spacing:.02em;
+  color:var(--text);opacity:.9;max-width:22ch;line-height:1.45;pointer-events:none}
+.atlas-lead::before{content:"↑";display:block;font-size:.7em;color:var(--primary);opacity:.7;margin-bottom:.5em}
+.atlas-hint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(124,227,176,.55);pointer-events:none;transition:opacity .5s ease}
+.atlas-hint::after{content:"";display:block;width:1px;height:26px;margin:8px auto 0;
+  background:linear-gradient(rgba(124,227,176,.6),transparent);animation:atlas-drop 2.4s ease-in-out infinite}
+@keyframes atlas-drop{0%,100%{opacity:.25;transform:translateY(-6px)}50%{opacity:.9;transform:translateY(4px)}}
+.atlas-stage.done .atlas-hint{opacity:0}
+@media (max-width:720px){
+  .atlas-stage{height:300vh}
+  .atlas-lead{bottom:34px;font-size:15px}
+}
+@media (prefers-reduced-motion:reduce){
+  .atlas-stage{height:auto;padding:12vh 0}
+  .atlas-sticky{position:relative;height:min(78vh,620px)}
+  .atlas-hint{display:none}
+  .atlas-hint::after{animation:none}
+}
+
+/* ── 固定背景层：呼吸点阵 + 线段多面体 ───────────────── */
+#atlas-backdrop{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,footer{position:relative;z-index:1}
+
+/* ── 侧栏（≥1040px 时顶栏变成左侧栏）───────────────── */
+@media (min-width:1040px){
+  body{padding-left:252px}
+  .topbar{
+    position:fixed;left:18px;top:18px;bottom:18px;margin:0;width:216px;max-width:none;
+    flex-direction:column;align-items:stretch;gap:20px;padding:22px 16px;
+    border-radius:var(--r-lg);
+  }
+  .topbar .brand{font-size:15px}
+  .nav{flex-direction:column;flex:0 0 auto;margin:0;gap:3px;overflow:visible}
+  .nav a{width:100%;justify-content:flex-start;padding:9px 12px;border-radius:12px}
+  .top-actions{margin-top:auto;justify-content:flex-end}
+  .wrap{padding:0 34px}
+  .section{padding:0}
+}
+
+/* ── 文章承载：悬浮卡片 ─────────────────────────────── */
+main.wrap{gap:0}
+main.wrap > section:not(.hero){
+  margin:30px 0;
+  padding:clamp(20px,2.6vw,34px);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  background:
+    linear-gradient(180deg,rgba(22,35,27,.72),rgba(16,26,20,.86));
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(14px) saturate(1.15);-webkit-backdrop-filter:blur(14px) saturate(1.15);
+}
+[data-theme="light"] main.wrap > section:not(.hero){
+  background:linear-gradient(180deg,rgba(255,255,255,.86),rgba(243,250,245,.92));
+}
+main.wrap > section:not(.hero) > .section-head{margin-top:0}
+main.wrap > section.hero{margin:0 0 10px}
+@media (max-width:720px){
+  main.wrap > section:not(.hero){margin:20px 0;padding:18px 16px;border-radius:22px}
+}
+
+.atlas-stage.texted .atlas-lead{opacity:0!important;transform:translateY(6px)}
+.atlas-lead{transition:opacity .5s ease;max-width:13ch;font-size:clamp(14px,1.7vw,19px)}
