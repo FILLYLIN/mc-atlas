@@ -65,11 +65,18 @@
   }
 
   function buildLayout() {
-    const cols = W < 720 ? 2 : 3;
-    const rows = Math.min(Math.ceil(NAMES.length / cols), 10);
-    const fs = clamp(Math.round(W / (cols * 13)), 11, 20);
-    const colW = Math.min(W * 0.78 / cols, 340);
-    layout = { cols, rows, fs, colW, x0: W / 2 - (colW * cols) / 2, y0: H / 2 - (rows * fs * 2.1) / 2 };
+    const fs = clamp(Math.round(W / 34), 12, 24);
+    const n = Math.max(NAMES.length, 1);
+    const items = NAMES.map((name, i) => {
+      const a = (i / n) * Math.PI * 2 + (i % 3) * 0.42;
+      return {
+        name,
+        ang: a,
+        up: 0.28 + ((i * 37) % 100) / 100 * 0.85,   // 每个名字飞出的时机略有差异
+        spin: (((i * 53) % 100) / 100 - 0.5) * 0.6
+      };
+    });
+    layout = { fs, items, halfW: Math.min(W, H) * 0.62, halfH: Math.min(W, H) * 0.5 };
   }
 
   function rotPoint([x, y, z], yaw, pitch) {
@@ -90,7 +97,7 @@
     ctx.clearRect(0, 0, W, H);
     const enter = ease(seg(p, 0, 0.18));
     const split = ease(seg(p, 0.3, 0.52));     // 裂开
-    const textT = ease(seg(p, 0.5, 0.76));     // 类名归位
+    const textT = seg(p, 0.40, 0.95);          // 类名穿越（一直飞到爆炸）
     const burst = seg(p, 0.8, 0.94);           // 爆炸
     const gone = seg(p, 0.92, 0.99);
 
@@ -134,7 +141,7 @@
         polys.push({
           z: zsum / 4, pts,
           color: `rgb(${Math.round(base[0] * sh)},${Math.round(base[1] * sh)},${Math.round(base[2] * sh)})`,
-          alpha: (1 - 0.82 * textT) * (1 - burst)
+          alpha: (1 - 0.88 * clamp(textT * 1.7)) * (1 - burst)
         });
       }
     }
@@ -166,33 +173,41 @@
       ctx.globalAlpha = 1;
     }
 
-    // 类名：从方块中心散落到各自位置
+    // 类名：从方块里喷出，向镜头飞过，带拉伸与残影
     if (textT > 0.002 && burst < 0.999) {
-      const { cols, rows, fs, colW, x0, y0 } = layout;
-      ctx.font = `500 ${fs}px ui-monospace, SFMono-Regular, Menlo, monospace`;
+      const { fs, items, halfW, halfH } = layout;
+      ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      const total = Math.min(NAMES.length, cols * rows);
-      for (let i = 0; i < total; i++) {
-        const c = i % cols;
-        const r = Math.floor(i / cols);
-        const local = ease(clamp((textT - (r * 0.05 + c * 0.035)) / 0.45));
-        if (local <= 0.005) continue;
-        const tx = x0 + c * colW;
-        const ty = y0 + r * fs * 2.1;
-        const bx = cx + (i % 5 - 2) * 18;
-        const by = cy + (Math.floor(i / 5) % 5 - 2) * 16;
-        const x = bx + (tx - bx) * local;
-        const y = by + (ty - by) * local;
-        const a = local * (1 - seg(burst, 0, 0.5));
+      for (const it of items) {
+        let t = (textT - 0.16 * it.up) / 0.84;
+        if (t <= 0) continue;
+        t = Math.min(t, 1.6);
+        const r = 0.05 + Math.pow(t, 1.72) * 2.15;
+        const ang = it.ang + it.spin * 0.4 + t * 0.55;
+        const rad = fs * (0.5 + r * 1.9);
+        const x = cx + Math.cos(ang) * halfW * r;
+        const y = cy + Math.sin(ang) * halfH * r;
+        const fadeIn = clamp(t * 6);
+        const fadeOut = 1 - clamp((r - 1.05) / 0.55);
+        const a = fadeIn * fadeOut * (1 - seg(burst, 0, 0.45));
         if (a <= 0.01) continue;
+        ctx.save();
+        ctx.translate(x, y);
+        const sy = 1 + r * 0.55;
+        ctx.scale(rad / fs, (rad / fs) * sy);
+        // 残影：同色略淡，沿径向靠前一点
+        for (let g = 2; g >= 1; g--) {
+          ctx.globalAlpha = a * (0.1 * (3 - g)) ;
+          ctx.fillStyle = 'rgba(124,227,176,0.9)';
+          ctx.fillText(it.name, 0, g * 2.2);
+        }
         ctx.globalAlpha = a * 0.95;
-        ctx.fillStyle = 'rgba(124,227,176,0.95)';
-        ctx.fillText(NAMES[i], x, y);
-        ctx.globalAlpha = a * 0.4;
-        ctx.fillStyle = 'rgba(160,255,220,0.75)';
-        ctx.fillRect(x - 10, y - 1, 4, 2);
+        ctx.fillStyle = 'rgba(206,255,232,0.96)';
+        ctx.fillText(it.name, 0, 0);
+        ctx.restore();
       }
       ctx.globalAlpha = 1;
+      ctx.textAlign = 'start';
     }
 
     // 开场文案
