@@ -8,6 +8,7 @@
   const ctx = canvas.getContext('2d');
   const NAMES = (window.MC_ATLAS_HERO_NAMES || []).slice(0, 30);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lite = window.innerWidth < 820 || (navigator.hardwareConcurrency || 8) <= 4;
 
   const VOX = 4;
   const voxels = [];
@@ -56,7 +57,7 @@
   const ease = (t) => t * t * (3 - 2 * t);
 
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    DPR = Math.min(window.devicePixelRatio || 1, window.innerWidth < 820 ? 1.3 : 2);
     W = canvas.clientWidth;
     H = canvas.clientHeight;
     canvas.width = Math.round(W * DPR);
@@ -128,6 +129,7 @@
       const palette = v.grass ? GRASS : DIRT;
       const base = palette[Math.floor(v.seed * palette.length) % palette.length];
       for (const f of FACES) {
+        if (f.n[1] < 0) continue; // 底面不画
         const nr = rotPoint(f.n, yaw, pitch);
         if (nr[2] > 0.02) continue;
         const pts = [];
@@ -147,11 +149,11 @@
         const col = `rgb(${Math.round(base[0] * sh)},${Math.round(base[1] * sh)},${Math.round(base[2] * sh)})`;
         const a0 = clamp(1 - ease(seg(p, 0.62, 0.95)) * 1.1) * (1 - burst);
         polys.push({ z: zsum / 4, pts, color: col, alpha: a0 });
-        const trail = ease(seg(p, 0.34, 0.8)) * 0.55;
+        const trail = (lite ? 0.28 : 0.55) * ease(seg(p, 0.34, 0.8));
         if (trail > 0.02) {
           const k = 1 - 0.16 * trail;
           polys.push({
-            z: zsum / 4 - 0.01, color: col, alpha: a0 * trail * 0.5, blur: true,
+            z: zsum / 4 - 0.01, color: col, alpha: a0 * trail * 0.42,
             pts: pts.map(([x, y, d]) => [cx + (x - cx) * k, cy + (y - cy) * k, d])
           });
         }
@@ -160,7 +162,6 @@
     polys.sort((a, b) => b.z - a.z);
     for (const poly of polys) {
       if (poly.alpha <= 0.02) continue;
-      ctx.filter = poly.blur ? 'blur(3px)' : 'none';
       ctx.globalAlpha = poly.alpha;
       ctx.beginPath();
       ctx.moveTo(poly.pts[0][0], poly.pts[0][1]);
@@ -169,13 +170,14 @@
       ctx.fillStyle = poly.color;
       ctx.fill();
     }
-    ctx.filter = 'none';
     ctx.globalAlpha = 1;
 
     // 爆炸火花
     if (burst > 0 && burst < 1) {
       const r = Math.min(W, H) * 0.5 * burst;
-      for (const sp of SPARKS) {
+      const sparkLimit = lite ? 36 : SPARKS.length;
+      for (let si = 0; si < sparkLimit; si++) {
+        const sp = SPARKS[si];
         const d = sp.v * r * 1.5;
         const x = cx + sp.d[0] * d;
         const y = cy - sp.d[1] * d;
@@ -206,8 +208,15 @@
   }
 
   const hint = stage.querySelector('.atlas-hint');
-  let raf = 0;
+  let raf = 0, slow = 0, last = 0;
   function frame() {
+    const now = performance.now();
+    if (last) {
+      const dt = now - last;
+      slow = dt > 28 ? slow + 1 : Math.max(0, slow - 1);
+      if (slow > 4 && !lite) { lite = true; slow = 0; }
+    }
+    last = now;
     const rect = stage.getBoundingClientRect();
     const span = Math.max(stage.offsetHeight - window.innerHeight, 1);
     const raw = clamp(-rect.top / span);
