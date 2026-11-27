@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>刻内时序 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：刻内时序">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>刻内时序</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 4 步</p>
+    <h1>刻内时序</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">同一 tick 内，为什么两个元件谁先谁后是固定的？</h2>
+    <p class="ch-sum">ServerLevel.tick 的阶段顺序固定：计划刻 → 流体刻 → 区块 → 方块事件 → 实体 → 方块实体。元件处在哪个阶段，决定了它这一 tick 的可见顺序。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain"><li><b>主循环</b><span>MinecraftServer.tickServer 调每个 ServerLevel.tick</span></li><li><b>计划刻</b><span>blockTicks.tick → Block.tick</span></li><li><b>方块事件</b><span>runBlockEvents 执行上一阶段入队的事件</span></li><li><b>实体与方块实体</b><span>entityTickList → tickBlockEntities</span></li></ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">代码位置</p>
+    <table class="ch-table"><thead><tr><th>类型 / 方法</th><th>行</th><th>说明</th></tr></thead><tbody><tr><td><a href="../classes.html?q=MinecraftServer">MinecraftServer</a>.<span class="mono">tickServer</span></td><td class="num">:938</td><td>服务器主循环</td></tr><tr><td><a href="../classes.html?q=ServerLevel">ServerLevel</a>.<span class="mono">tick</span></td><td class="num">:359</td><td>世界 tick 的阶段总入口</td></tr><tr><td><a href="../classes.html?q=ServerLevel">ServerLevel</a>.<span class="mono">tick</span></td><td class="num">:410</td><td>runBlockEvents 位于计划刻和实体之间</td></tr><tr><td><a href="../classes.html?q=ServerLevel">ServerLevel</a>.<span class="mono">tick</span></td><td class="num">:456</td><td>最后 tickBlockEntities</td></tr></tbody></table>
+    <p class="hint">行号按 26.3 源码核对，点类型名可跳到类作用页检索。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">相关文章</p>
+    <ul class="ch-arts"><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E5%88%BB%E4%B8%8E%E5%88%BB%E9%97%B4%E6%97%B6%E5%BA%8F.zh.md" target="_blank" rel="noopener">刻与刻间时序</a><span>两个游戏刻之间的执行顺序</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E5%88%9D%E7%AA%A5%E5%88%BB%E5%86%85%E6%97%B6%E5%BA%8F.zh.md" target="_blank" rel="noopener">初窥刻内时序</a><span>刻内阶段划分与瞬时/延时行为</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%96%B9%E5%9D%97%E4%BA%8B%E4%BB%B6.zh.md" target="_blank" rel="noopener">方块事件</a><span>方块事件队列与执行阶段</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%96%B9%E5%9D%97%E5%AE%9E%E4%BD%93.zh.md" target="_blank" rel="noopener">方块实体</a><span>方块实体的 tick、数据与更新</span></li></ul>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

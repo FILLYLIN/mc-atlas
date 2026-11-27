@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>实体运动 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：实体运动">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>实体运动</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 4 步</p>
+    <h1>实体运动</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">实体每 tick 的位移是怎样算出来、又被什么改写的？</h2>
+    <p class="ch-sum">实体先更新速度，再由 Entity.move 做碰撞裁剪；位置变化后触发方块/实体交互。活塞、爆炸、流体等外力则在移动前后改写速度。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain"><li><b>更新速度</b><span>baseTick / travel 计算重力、输入与外力</span></li><li><b>碰撞裁剪</b><span>Entity.move → collide 求实际位移</span></li><li><b>落地</b><span>更新 onGround、支撑方块与 fallDistance</span></li><li><b>交互</b><span>推动其他实体、触发方块与游戏事件</span></li></ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">代码位置</p>
+    <table class="ch-table"><thead><tr><th>类型 / 方法</th><th>行</th><th>说明</th></tr></thead><tbody><tr><td><a href="../classes.html?q=LivingEntity">LivingEntity</a>.<span class="mono">travel</span></td><td class="num">:2413</td><td>按流体/飞行/空气选择运动模型</td></tr><tr><td><a href="../classes.html?q=Entity">Entity</a>.<span class="mono">move</span></td><td class="num">:736</td><td>移动总入口，MoverType 决定外力规则</td></tr><tr><td><a href="../classes.html?q=Entity">Entity</a>.<span class="mono">collide</span></td><td class="num">:1177</td><td>按碰撞箱裁剪位移</td></tr><tr><td><a href="../classes.html?q=Entity">Entity</a>.<span class="mono">push</span></td><td class="num">:1920</td><td>实体间推挤</td></tr></tbody></table>
+    <p class="hint">行号按 26.3 源码核对，点类型名可跳到类作用页检索。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">相关文章</p>
+    <ul class="ch-arts"><li><a href="https://github.com/techmc-wiki/Articles/blob/main/EntityMove/01-%E5%AE%9E%E4%BD%93%E8%BF%90%E5%8A%A8%E5%9F%BA%E7%A1%80.zh.md" target="_blank" rel="noopener">实体运动基础</a><span>实体属性、运算顺序与 Entity 模型</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/EntityMove/02-%E5%AE%9E%E4%BD%93%E7%A7%BB%E5%8A%A8%E4%B8%8E%E7%A2%B0%E6%92%9E.zh.md" target="_blank" rel="noopener">实体移动过程及碰撞机制</a><span>move/collide 的碰撞裁剪</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/EntityMove/04-%E5%A4%96%E5%8A%9B%E5%AF%B9%E8%BF%90%E5%8A%A8%E7%9A%84%E5%BD%B1%E5%93%8D.zh.md" target="_blank" rel="noopener">外界因素对运动的影响</a><span>爆炸、活塞、挤压、方块减速</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/EntityMove/05-LivingEntity%E8%BF%90%E5%8A%A8.zh.md" target="_blank" rel="noopener">LivingEntity运动机制</a><span>travel、AI 与属性对运动的影响</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/EntityMove/06-%E5%85%B7%E4%BD%93%E5%AE%9E%E4%BD%93%E5%88%86%E6%9E%90.zh.md" target="_blank" rel="noopener">几类具体实体运动分析</a><span>TNT、落沙、物品、经验球的完整运动</span></li></ul>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

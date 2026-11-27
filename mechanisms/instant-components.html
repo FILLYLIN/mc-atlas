@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>瞬时元件 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：瞬时元件">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>瞬时元件</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 3 步</p>
+    <h1>瞬时元件</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">铁轨、铜灯为什么能在同一 tick 内完成状态切换？</h2>
+    <p class="ch-sum">这类元件在收到邻居更新时直接计算并 setBlock，状态切换在同一 tick 完成；与依赖计划刻的中继器形成对照。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain"><li><b>邻居更新</b><span>RailBlock / CopperBulbBlock 收到 neighborChanged</span></li><li><b>直接计算</b><span>RailState.place 或 checkAndFlip 算新状态</span></li><li><b>立即写回</b><span>Level.setBlock 在同一阶段完成</span></li></ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">代码位置</p>
+    <table class="ch-table"><thead><tr><th>类型 / 方法</th><th>行</th><th>说明</th></tr></thead><tbody><tr><td><a href="../classes.html?q=RailBlock">RailBlock</a>.<span class="mono">updateState</span></td><td class="num">:22</td><td>铁轨形状的即时更新</td></tr><tr><td><a href="../classes.html?q=RailState">RailState</a>.<span class="mono">place</span></td><td class="num">:218</td><td>连接关系计算</td></tr><tr><td><a href="../classes.html?q=CopperBulbBlock">CopperBulbBlock</a>.<span class="mono">checkAndFlip</span></td><td class="num">:42</td><td>铜灯的即时翻转</td></tr></tbody></table>
+    <p class="hint">行号按 26.3 源码核对，点类型名可跳到类作用页检索。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">相关文章</p>
+    <ul class="ch-arts"><li><a href="https://github.com/techmc-wiki/Articles/blob/main/InstantComponents/%E9%93%81%E8%BD%A8.zh.md" target="_blank" rel="noopener">铁轨</a><span>铁轨连接与瞬时更新</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/InstantComponents/%E9%93%9C%E7%81%AF.md" target="_blank" rel="noopener">铜灯</a><span>铜灯状态切换与红石响应</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%A0%91%E7%94%B5%E4%B8%8E%E8%84%9A%E7%94%B5.zh.md" target="_blank" rel="noopener">树电与脚电</a><span>树叶/脚手架作为导体时的瞬时更新行为</span></li></ul>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

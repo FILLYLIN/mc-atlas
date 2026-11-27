@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>方块实体 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：方块实体">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>方块实体</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 4 步</p>
+    <h1>方块实体</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">箱子、熔炉为什么能保存数据，还能每 tick 工作？</h2>
+    <p class="ch-sum">方块实体把数据挂在 BlockEntity 上，由 LevelChunk 注册 ticker，在每 tick 的方块实体阶段执行；它不在 BlockState 里，因此更新与保存走另一条链。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain"><li><b>注册</b><span>LevelChunk 为方块实体创建 TickingBlockEntity</span></li><li><b>阶段</b><span>ServerLevel.tick 末尾 tickBlockEntities</span></li><li><b>执行</b><span>BlockEntityTicker.tick 读写数据</span></li><li><b>持久化</b><span>setChanged 标记，存档时写入</span></li></ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">代码位置</p>
+    <table class="ch-table"><thead><tr><th>类型 / 方法</th><th>行</th><th>说明</th></tr></thead><tbody><tr><td><a href="../classes.html?q=Level">Level</a>.<span class="mono">tickBlockEntities</span></td><td class="num">:527</td><td>方块实体阶段入口</td></tr><tr><td><a href="../classes.html?q=LevelChunk">LevelChunk</a>.<span class="mono">createTicker</span></td><td class="num">:731</td><td>按方块实体类型创建 ticker</td></tr><tr><td><a href="../classes.html?q=LevelChunk">LevelChunk</a>.<span class="mono">BoundTickingBlockEntity</span></td><td class="num">:735</td><td>ticker 与方块实体绑定</td></tr><tr><td><a href="../classes.html?q=BlockEntity">BlockEntity</a>.<span class="mono">setChanged</span></td><td class="num">:192</td><td>标记数据已修改，等待保存</td></tr></tbody></table>
+    <p class="hint">行号按 26.3 源码核对，点类型名可跳到类作用页检索。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">相关文章</p>
+    <ul class="ch-arts"><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%96%B9%E5%9D%97%E5%AE%9E%E4%BD%93.zh.md" target="_blank" rel="noopener">方块实体</a><span>方块实体的 tick、数据与更新</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%B4%BB%E5%A1%9E%EF%BC%9A%E6%96%B9%E5%9D%97%E4%BA%8B%E4%BB%B6%E4%B8%8E%E6%96%B9%E5%9D%97%E5%AE%9E%E4%BD%93.zh.md" target="_blank" rel="noopener">活塞：方块事件与方块实体</a><span>活塞结构分析、b36 与移动实体</span></li></ul>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

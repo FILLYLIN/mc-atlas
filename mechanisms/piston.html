@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>活塞：方块事件 + 方块实体 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：活塞：方块事件 + 方块实体">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>活塞：方块事件 + 方块实体</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 5 步</p>
+    <h1>活塞：方块事件 + 方块实体</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">活塞推动方块时，方块事件和方块实体各自负责什么？</h2>
+    <p class="ch-sum">活塞的 triggerEvent 先把动作入队；方块事件阶段做结构分析、放置 MovingPistonBlock；移动进度由 PistonMovingBlockEntity 每 tick 推进，并推动碰撞实体。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain"><li><b>触发</b><span>PistonBaseBlock.triggerEvent 判断伸出/收回</span></li><li><b>入队</b><span>ServerLevel.blockEvent 生成 BlockEventData</span></li><li><b>事件阶段</b><span>runBlockEvents → doBlockEvent → moveBlocks</span></li><li><b>结构分析</b><span>PistonStructureResolver 计算可推动/可破坏列表</span></li><li><b>移动实体</b><span>PistonMovingBlockEntity.tick 推进进度并推动实体</span></li></ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">代码位置</p>
+    <table class="ch-table"><thead><tr><th>类型 / 方法</th><th>行</th><th>说明</th></tr></thead><tbody><tr><td><a href="../classes.html?q=PistonBaseBlock">PistonBaseBlock</a>.<span class="mono">triggerEvent</span></td><td class="num">:139</td><td>活塞事件入口</td></tr><tr><td><a href="../classes.html?q=PistonBaseBlock">PistonBaseBlock</a>.<span class="mono">moveBlocks</span></td><td class="num">:257</td><td>放置 MovingPistonBlock</td></tr><tr><td><a href="../classes.html?q=ServerLevel">ServerLevel</a>.<span class="mono">blockEvent</span></td><td class="num">:1260</td><td>事件入队</td></tr><tr><td><a href="../classes.html?q=ServerLevel">ServerLevel</a>.<span class="mono">runBlockEvents</span></td><td class="num">:1264</td><td>事件阶段执行</td></tr><tr><td><a href="../classes.html?q=PistonStructureResolver">PistonStructureResolver</a>.<span class="mono">resolve</span></td><td class="num">:37</td><td>推动结构分析</td></tr><tr><td><a href="../classes.html?q=PistonMovingBlockEntity">PistonMovingBlockEntity</a>.<span class="mono">tick</span></td><td class="num">:291</td><td>移动进度</td></tr><tr><td><a href="../classes.html?q=Entity">Entity</a>.<span class="mono">move</span></td><td class="num">:736</td><td>MoverType.PISTON 推动实体</td></tr></tbody></table>
+    <p class="hint">行号按 26.3 源码核对，点类型名可跳到类作用页检索。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">相关文章</p>
+    <ul class="ch-arts"><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%B4%BB%E5%A1%9E%EF%BC%9A%E6%96%B9%E5%9D%97%E4%BA%8B%E4%BB%B6%E4%B8%8E%E6%96%B9%E5%9D%97%E5%AE%9E%E4%BD%93.zh.md" target="_blank" rel="noopener">活塞：方块事件与方块实体</a><span>活塞结构分析、b36 与移动实体</span></li><li><a href="https://github.com/techmc-wiki/Articles/blob/main/MicroTiming/%E6%96%B9%E5%9D%97%E4%BA%8B%E4%BB%B6.zh.md" target="_blank" rel="noopener">方块事件</a><span>方块事件队列与执行阶段</span></li></ul>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

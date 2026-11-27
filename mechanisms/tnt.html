@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TNT 复制 · 机制 · mc·atlas</title>
+<meta name="description" content="Minecraft 26.3 机制章节：TNT 复制">
+<link rel="stylesheet" href="../assets/theme.css">
+</head>
+<body data-page="mechanisms">
+<header class="topbar">
+  <a class="brand" href="../index.html"><span class="brand-mark">◆</span><span>mc·atlas<small>Minecraft 26.3</small></span></a>
+  <nav class="nav">
+    <a data-page="home" href="../index.html">首页</a>
+    <a data-page="classes" href="../classes.html">类作用</a>
+    <a data-page="mechanisms" href="../mechanisms.html">机制</a>
+    <a data-page="objects" href="../objects.html">注册对象</a>
+    <a data-page="tests" href="../tests.html">游戏实验</a>
+    <a data-page="method" href="../method.html">方法</a>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="切换主题">◐</button>
+  </div>
+</header>
+<canvas id="atlas-backdrop" aria-hidden="true"></canvas>
+<main class="wrap">
+  <nav class="crumbs"><a href="../mechanisms.html">机制</a><span>/</span><b>TNT 复制</b></nav>
+  <header class="page-head rise">
+    <p class="eyebrow">机制章节 · 附</p>
+    <h1>TNT 复制</h1>
+  </header>
+  
+  <section class="section"><div class="card">
+    <p class="eyebrow">问题</p>
+    <h2 class="ch-q">一个 TNT 方块，为什么会同时变成实体和方块？</h2>
+    <p class="ch-sum">按源码看，复制成立的条件是"点燃"和"搬块"落在同一个游戏刻里，而且点燃要由活塞动作本身引起。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">过程</p>
+    <ol class="ch-chain">
+      <li><b>点燃判定</b><span><code>TntBlock</code> 只在 <code>onPlace</code> 或 <code>neighborChanged</code> 里检查 <code>level.hasNeighborSignal(pos)</code>，成立就调 <code>prime()</code>，由调用方清空这一格。</span></li>
+      <li><b>生成实体</b><span><code>prime()</code> 只在方块中心创建一个 <code>PrimedTnt</code>，返回 true；它自己不碰方块状态。</span></li>
+      <li><b>活塞记账</b><span>活塞扩展时先用 <code>PistonStructureResolver</code> 收集要搬的方块，把状态存进 <code>PistonMovingBlockEntity</code>，原位置先置空。</span></li>
+      <li><b>两刻后落块</b><span>两个游戏刻之后才把方块放到目标格——用的正是当初记下的那份状态。</span></li>
+    </ol>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">结论</p>
+    <p>活塞先记下"这格有 TNT"，紧接着这格的 TNT 被点燃、位置被清空；实体已经生成，活塞却仍按清单在目标格放回一块 TNT。两个动作的记账时间点错开，就得到"一个实体 + 一块方块"。</p>
+    <p>这个解释与社区长期结论一致，但没有在本机实测，只是把源码读到这里。Paper 的 MC-188840 补丁让活塞从世界里重读状态代替缓存，可视为反证：原版确实按缓存清单落块。</p>
+    <p class="hint">本章只描述这一条路径，不声称覆盖所有复制机设计。</p>
+  </div></section>
+  <section class="section"><div class="card">
+    <p class="eyebrow">待验证</p>
+    <p>装置、要记的三个数与判据写在<a href="../tests.html#tnt-test">游戏实验</a>页；那一节标注为尚未执行。</p>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap row">
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
+    <span><a href="../../README.md">README</a> · <a href="../../notes/类作用解析.md">分析笔记</a> · <a href="../../index/26.3/browse.html">符号浏览器</a></span>
+  </div>
+</footer>
+<script src="../assets/backdrop.js"></script>
+</body>
+</html>

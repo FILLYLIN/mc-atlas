@@ -26,7 +26,11 @@
   </div>
 </header>
 <main class="wrap wide">
-  <header class="page-head rise">
+  <section class="section" style="padding-top:6px">
+  <div class="section-head"><div><p class="eyebrow">章节</p><h2>八章机制，分开读</h2></div><p class="hint">每章只讲一件事：问题、过程、代码位置、相关文章。</p></div>
+  <div class="chapter-grid"><a class="chapter-card" href="mechanisms/block-update.html"><span class="ch-no">01</span><b>方块更新</b><span class="ch-ask">一次 setBlock 如何让周围的红石元件都动起来？</span></a><a class="chapter-card" href="mechanisms/scheduled-tick.html"><span class="ch-no">02</span><b>计划刻</b><span class="ch-ask">中继器为什么会有 1–4 刻延迟？</span></a><a class="chapter-card" href="mechanisms/micro-timing.html"><span class="ch-no">03</span><b>刻内时序</b><span class="ch-ask">同一 tick 内，为什么两个元件谁先谁后是固定的？</span></a><a class="chapter-card" href="mechanisms/piston.html"><span class="ch-no">04</span><b>活塞：方块事件 + 方块实体</b><span class="ch-ask">活塞推动方块时，方块事件和方块实体各自负责什么？</span></a><a class="chapter-card" href="mechanisms/block-entity.html"><span class="ch-no">05</span><b>方块实体</b><span class="ch-ask">箱子、熔炉为什么能保存数据，还能每 tick 工作？</span></a><a class="chapter-card" href="mechanisms/entity-motion.html"><span class="ch-no">06</span><b>实体运动</b><span class="ch-ask">实体每 tick 的位移是怎样算出来、又被什么改写的？</span></a><a class="chapter-card" href="mechanisms/instant-components.html"><span class="ch-no">07</span><b>瞬时元件</b><span class="ch-ask">铁轨、铜灯为什么能在同一 tick 内完成状态切换？</span></a><a class="chapter-card" href="mechanisms/tnt.html"><span class="ch-no">08</span><b>TNT 复制</b><span class="ch-ask">点燃与搬块同一刻时，为什么多出一块</span></a></div>
+</section>
+<header class="page-head rise">
     <p class="eyebrow">Code Association · GTMC × 26.3</p>
     <h1>代码联想</h1>
     <p class="lede" id="mechIntro"></p>
@@ -80,27 +84,10 @@ node tools/techmc.mjs ask "活塞推动方块时，方块事件和方块实体�
     </div>
   </section>
 
-  <section class="section" id="tnt-dup">
-    <div class="section-head">
-      <div><p class="eyebrow">附：一条具体路径</p><h2>TNT 复制走的是哪两步</h2></div>
-      <p class="hint">2026-11-27 整理 · 依据 26.3 源码</p>
-    </div>
-    <div class="card">
-      <h3>过程</h3>
-      <p><code>TntBlock</code> 只在两种情况下点燃自己：被放置时（<code>onPlace</code>）或收到邻居更新时（<code>neighborChanged</code>），判据都是 <code>level.hasNeighborSignal(pos)</code>；一旦判定成立，它调用 <code>prime()</code> 在方块中心生成一个 <code>PrimedTnt</code> 实体，然后由调用方把这一格清成空气。</p>
-      <p>另一边，活塞扩展不是立刻搬方块：先由 <code>PistonStructureResolver</code> 收集要移动的方块，把方块状态存进 <code>PistonMovingBlockEntity</code>，原位置先置空，两个游戏刻之后才真正把方块放到目标格。</p>
-      <p>把这两步放在同一个游戏刻里：活塞先记下"这一格有 TNT"，紧接着这格的 TNT 被点燃、位置被清空。实体已经生成，活塞却仍按自己的清单在目标格放回一块 TNT。</p>
-      <h3>结论</h3>
-      <p>按代码路径看，复制成立的条件是点燃这件事由活塞动作本身引起（被推走的铁轨、被推走的红石元件、失去支撑的方块），而不是由一段红石线直接给 TNT 供能——后者会在活塞结算之前就把方块烧掉。</p>
-      <p>这个解释与社区长期结论一致，但我们没有在本机实测，只是把源码读到这里；Paper 那边针对同一现象有 MC-188840 的补丁，做法是让活塞从世界里重读状态而不是使用缓存，可以看作反证：原版确实按缓存清单落块。</p>
-      <p class="hint">本文只描述这一条路径，不声称覆盖所有复制机设计。micro BUD 那类机器用的是同一个游戏刻内的阶段顺序，机制不同，见「游戏实验」页的待办条目。</p>
-    </div>
-  </section>
-
-</main>
+  </main>
 <footer>
   <div class="wrap row">
-    <span>mc·atlas · 本地生成于 2026/11/27 13:03:58 · 数据 26.3</span>
+    <span>mc·atlas · 本地生成于 2026/11/27 13:08:42 · 数据 26.3</span>
     <span><a href="../README.md">README</a> · <a href="../notes/类作用解析.md">分析笔记</a> · <a href="../index/26.3/browse.html">符号浏览器</a></span>
   </div>
 </footer>
