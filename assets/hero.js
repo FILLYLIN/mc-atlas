@@ -136,7 +136,6 @@
       const palette = v.grass ? GRASS : DIRT;
       const base = palette[Math.floor(v.seed * palette.length) % palette.length];
       for (const f of FACES) {
-        if (f.n[1] < 0) continue; // 底面一般不朝向镜头，省一层
         const pts = [];
         let zsum = 0;
         const flow = ease(seg(p, 0.4, 0.95));
