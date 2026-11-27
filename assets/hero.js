@@ -220,12 +220,8 @@
     const now = performance.now();
     if (last) {
       const dt = now - last;
-      slow = dt > 28 ? slow + 1 : Math.max(0, slow - 1);
-      if (slow > 4) {
-        if (!lite) { lite = true; }
-        else if (VOX > 2) { buildVoxels(2); }
-        slow = 0;
-      }
+      slow = dt > 26 ? slow + 1 : 0;
+      if (slow > 20 && !lite) { lite = true; slow = 0; }
     }
     last = now;
     const rect = stage.getBoundingClientRect();
